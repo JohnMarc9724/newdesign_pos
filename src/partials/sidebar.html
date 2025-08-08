@@ -1,0 +1,117 @@
+<aside
+  :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
+  class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0"
+>
+  <!-- SIDEBAR HEADER -->
+  <div
+    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
+    class="flex items-center gap-2 pt-8 sidebar-header pb-7"
+  >
+    <!-- <a href="index.html">
+      <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
+        <img class="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
+        <img
+          class="hidden dark:block"
+          src="./images/logo/logo-dark.svg"
+          alt="Logo"
+        />
+        
+      </span>
+
+      <img
+        class="logo-icon"
+        :class="sidebarToggle ? 'lg:block' : 'hidden'"
+        src="./images/logo/logo-icon.svg"
+        alt="Logo"
+      />
+    </a> -->
+  </div>
+  <!-- SIDEBAR HEADER -->
+
+  <div
+    class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar"
+  >
+    <!-- Sidebar Menu -->
+    <nav>
+      <!-- Menu Group -->
+      <div>
+        <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">
+          <span
+            class="menu-group-title"
+            :class="sidebarToggle ? 'lg:hidden' : ''"
+          >
+            MENU
+          </span>
+
+          <svg
+            :class="sidebarToggle ? 'lg:block hidden' : 'hidden'"
+            class="mx-auto fill-current menu-group-icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
+              fill=""
+            />
+          </svg>
+        </h3>
+
+          <!-- POS + Inventory System Navigation Start -->
+        <ul class="flex flex-col gap-4 mb-6">
+            <!-- Dashboard -->
+            <li>
+              <a href="index.html" class="menu-item group" :class="(page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'dashboard') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/></svg>
+                <span class="menu-item-text">Dashboard</span>
+              </a>
+            </li>
+            <!-- POS -->
+            <li>
+              <a href="pos.html" class="menu-item group" :class="(page === 'pos') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'pos') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M3 17v2h18v-2H3zm0-5v2h18v-2H3zm0-5v2h18V7H3z" fill="currentColor"/></svg>
+                <span class="menu-item-text">POS</span>
+              </a>
+            </li>
+            <!-- Products -->
+            <li>
+              <a href="products.html" class="menu-item group" :class="(page === 'products') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'products') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2l9 4.9v9.8l-9 4.9-9-4.9V6.9L12 2zm0 2.18L5 7.09v7.82l7 3.81 7-3.81V7.09l-7-2.91z" fill="currentColor"/></svg>
+                <span class="menu-item-text">Products</span>
+            </a>
+          </li>
+            <!-- Inventory -->
+            <li>
+              <a href="#" class="menu-item group" :class="(page === 'inventory') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'inventory') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M20 6H4V4h16v2zm0 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V8h16zm-2 2H6v10h12V10z" fill="currentColor"/></svg>
+                <span class="menu-item-text">Inventory</span>
+            </a>
+          </li>
+            
+            <!-- Reports -->
+            <li>
+              <a href="#" class="menu-item group" :class="(page === 'reports') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'reports') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 8h14v-2H7v2zm0-4h14v-2H7v2zm0-6v2h14V7H7z" fill="currentColor"/></svg>
+                <span class="menu-item-text">Reports</span>
+                  </a>
+                </li>
+            <!-- Settings -->
+            <li>
+              <a href="#" class="menu-item group" :class="(page === 'settings') ? 'menu-item-active' : 'menu-item-inactive'">
+                <svg :class="(page === 'settings') ? 'menu-item-icon-active' :'menu-item-icon-inactive'" width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.61-.22l-2.39.96a7.007 7.007 0 00-1.63-.94l-.36-2.53A.488.488 0 0014 2h-4a.488.488 0 00-.5.42l-.36 2.53c-.59.22-1.14.52-1.63.94l-2.39-.96a.5.5 0 00-.61.22l-1.92 3.32a.5.5 0 00.12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.5.5 0 00-.12.64l1.92 3.32c.14.23.43.3.66.22l2.39-.96c.49.42 1.04.77 1.63.94l.36 2.53c.05.28.27.42.5.42h4c.23 0 .45-.14.5-.42l.36-2.53c.59-.22 1.14-.52 1.63-.94l2.39.96c.23.09.52.01.66-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z" fill="currentColor"/></svg>
+                <span class="menu-item-text">Settings</span>
+                  </a>
+                </li>
+              </ul>
+          <!-- POS + Inventory System Navigation End -->
+      </div>
+
+      <!-- Others Group removed -->
+    </nav>
+    <!-- Sidebar Menu -->
+  </div>
+</aside>

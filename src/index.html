@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      Terry&Perry POS Dashboard
+    </title>
+  </head>
+  <body
+    x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark bg-gray-900': darkMode === true}"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+     
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <div class="grid grid-cols-12 gap-4 md:gap-6">
+              <!-- KPI Row: Full-width main containers -->
+              <div class="col-span-12">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 md:gap-6">
+                  <!-- Total Sales Today -->
+                  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+                      <svg class="fill-gray-800 dark:fill-white/90" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="mt-5 flex items-end justify-between">
+                      <div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Total Sales Today (₱)</span>
+                        <h4 class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90">₱12,540</h4>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Total Orders Today -->
+                  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+                      <svg class="fill-gray-800 dark:fill-white/90" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v2H3V7zm2 4h14v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8zM8 3h8v2H8V3z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="mt-5 flex items-end justify-between">
+                      <div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Total Orders Today</span>
+                        <h4 class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90">248</h4>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Low Stock Ingredients -->
+                  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+                      <svg class="fill-gray-800 dark:fill-white/90" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V8h2v6z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="mt-5 flex items-end justify-between">
+                      <div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Low Stock Ingredients (≤ threshold)</span>
+                        <h4 class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90">5</h4>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Total Ingredients in Inventory -->
+                  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+                      <svg class="fill-gray-800 dark:fill-white/90" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 5h18v4H3V5zm0 6h18v8H3v-8z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="mt-5 flex items-end justify-between">
+                      <div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Total Ingredients in Inventory</span>
+                        <h4 class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90">123</h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-span-12 space-y-6 xl:col-span-7">
+
+                <!-- Sales Chart -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Daily Sales</h3>
+                  </div>
+                  <div class="max-w-full overflow-x-auto custom-scrollbar">
+                    <div class="-ml-5 min-w-[650px] pl-2 xl:min-w-full">
+                      <div id="chartOne" class="-ml-5 h-full min-w-[650px] pl-2 xl:min-w-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Sales Chart End -->
+
+                <!-- Top Used Ingredients (Pie) -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Top Used Ingredients</h3>
+                  </div>
+                  <div class="max-w-full overflow-x-auto custom-scrollbar">
+                    <div class="min-w-[320px]">
+                      <div id="chartIngredientsPie" class="h-[300px] w-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Top Used Ingredients End -->
+              </div>
+              <!-- Right Column -->
+              <div class="col-span-12 space-y-6 xl:col-span-5">
+                <!-- Recent Orders -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Recent Orders</h3>
+                  </div>
+                  <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full table-auto text-left text-sm">
+                      <thead>
+                        <tr class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                          <th class="px-4 py-3 font-medium">Order ID</th>
+                          <th class="px-4 py-3 font-medium">Customer</th>
+                          <th class="px-4 py-3 font-medium">Items</th>
+                          <th class="px-4 py-3 font-medium">Total</th>
+                          <th class="px-4 py-3 font-medium">Status</th>
+                          <th class="px-4 py-3 font-medium">Time</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        <tr class="text-gray-700 dark:text-gray-300">
+                          <td class="px-4 py-3">#INV-1024</td>
+                          <td class="px-4 py-3">John D.</td>
+                          <td class="px-4 py-3">3</td>
+                          <td class="px-4 py-3">₱845.00</td>
+                          <td class="px-4 py-3">
+                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">Paid</span>
+                          </td>
+                          <td class="px-4 py-3">10:24 AM</td>
+                        </tr>
+                        <tr class="text-gray-700 dark:text-gray-300">
+                          <td class="px-4 py-3">#INV-1025</td>
+                          <td class="px-4 py-3">Mary A.</td>
+                          <td class="px-4 py-3">1</td>
+                          <td class="px-4 py-3">₱120.00</td>
+                          <td class="px-4 py-3">
+                            <span class="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">Pending</span>
+                          </td>
+                          <td class="px-4 py-3">10:31 AM</td>
+                        </tr>
+                        <tr class="text-gray-700 dark:text-gray-300">
+                          <td class="px-4 py-3">#INV-1026</td>
+                          <td class="px-4 py-3">Walk-in</td>
+                          <td class="px-4 py-3">2</td>
+                          <td class="px-4 py-3">₱260.00</td>
+                          <td class="px-4 py-3">
+                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">Paid</span>
+                          </td>
+                          <td class="px-4 py-3">10:45 AM</td>
+                        </tr>
+                        <tr class="text-gray-700 dark:text-gray-300">
+                          <td class="px-4 py-3">#INV-1027</td>
+                          <td class="px-4 py-3">Ben S.</td>
+                          <td class="px-4 py-3">5</td>
+                          <td class="px-4 py-3">₱1,240.00</td>
+                          <td class="px-4 py-3">
+                            <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400">Cancelled</span>
+                          </td>
+                          <td class="px-4 py-3">11:02 AM</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Low Stock Ingredients -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Low Stock Ingredients</h3>
+                  </div>
+                  <ul class="mt-4 divide-y divide-gray-100 dark:divide-gray-800">
+                    <li class="flex items-center justify-between py-3">
+                      <div class="text-gray-700 dark:text-gray-300">Mozzarella Cheese</div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Qty: 2 kg</span>
+                        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400">Critical</span>
+                      </div>
+                    </li>
+                    <li class="flex items-center justify-between py-3">
+                      <div class="text-gray-700 dark:text-gray-300">Tomato Sauce</div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Qty: 3 L</span>
+                        <span class="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">Low</span>
+                      </div>
+                    </li>
+                    <li class="flex items-center justify-between py-3">
+                      <div class="text-gray-700 dark:text-gray-300">Basil</div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Qty: 10 g</span>
+                        <span class="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">Low</span>
+                      </div>
+                    </li>
+                    <li class="flex items-center justify-between py-3">
+                      <div class="text-gray-700 dark:text-gray-300">Olive Oil</div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Qty: 1 L</span>
+                        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400">Critical</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>

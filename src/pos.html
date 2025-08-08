@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      Terry&Perry POS - Point of Sale
+    </title>
+  </head>
+  <body
+    x-data="{ page: 'pos', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark bg-gray-900': darkMode === true}"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
+      >
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6" x-data="posApp()" x-init="init()">
+            <div class="grid grid-cols-12 gap-4 md:gap-6">
+              <div class="col-span-12">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white/90">Point of Sale</h2>
+                </div>
+              </div>
+
+              <!-- POS Layout: Products (left) and Cart (right) -->
+              <div class="col-span-12 space-y-6 xl:col-span-7">
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <div class="mb-4 flex flex-wrap items-center gap-3">
+                    <input type="text" placeholder="Search by name, category, or barcode" class="w-full flex-1 rounded-xl border px-3 py-2 dark:border-gray-700 dark:bg-transparent" x-model.trim="search" />
+                    <select class="rounded-xl border px-3 py-2 dark:border-gray-700 dark:bg-transparent" x-model="categoryFilter">
+                      <option value="">All Categories</option>
+                      <template x-for="c in categories()" :key="c">
+                        <option :value="c" x-text="c"></option>
+                      </template>
+                    </select>
+                    <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"><input type="checkbox" class="rounded" x-model="showAvailableOnly" /> Show available only</label>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                    <template x-for="p in filteredProducts()" :key="p.id">
+                      <button @click="addToCart(p)" class="rounded-xl border border-gray-200 p-4 text-left hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-700">
+                        <div class="text-sm text-gray-500 dark:text-gray-400" x-text="p.category"></div>
+                        <div class="mt-1 font-medium text-gray-800 dark:text-white/90" x-text="p.name"></div>
+                        <div class="mt-1 text-sm text-gray-600 dark:text-gray-300">₱<span x-text="Number(p.price).toFixed(2)"></span></div>
+                        <div class="mt-2">
+                          <template x-if="p.status === 'Available'">
+                            <span class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">Available</span>
+                          </template>
+                          <template x-if="p.status !== 'Available'">
+                            <span class="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400">Unavailable</span>
+                          </template>
+                        </div>
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-span-12 space-y-6 xl:col-span-5">
+                <!-- Cart -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <h3 class="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">Cart</h3>
+                  <div class="space-y-3" x-show="cart.length" x-cloak>
+                    <template x-for="(it, idx) in cart" :key="it.productId">
+                      <div class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+                        <div>
+                          <div class="font-medium text-gray-800 dark:text-white/90" x-text="it.name"></div>
+                          <div class="text-xs text-gray-500 dark:text-gray-400">₱<span x-text="Number(it.price).toFixed(2)"></span></div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <button @click="dec(idx)" class="rounded-lg border px-2 py-1 text-xs hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/10">-</button>
+                          <input type="number" min="1" class="w-16 rounded-lg border px-2 py-1 text-center dark:border-gray-700 dark:bg-transparent" x-model.number="it.qty" />
+                          <button @click="inc(idx)" class="rounded-lg border px-2 py-1 text-xs hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/10">+</button>
+                          <button @click="remove(idx)" class="rounded-lg border px-2 py-1 text-xs hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/10">Remove</button>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400" x-show="!cart.length" x-cloak>No items added yet.</div>
+                  <div class="mt-6 space-y-2">
+                    <div class="flex items-center justify-between text-sm"><span>Subtotal</span><span>₱<span x-text="subtotal().toFixed(2)"></span></span></div>
+                    <div class="flex items-center justify-between gap-2 text-sm">
+                      <div class="flex items-center gap-2">
+                        <span>Discount</span>
+                        <select class="rounded border px-2 py-1 text-xs dark:border-gray-700 dark:bg-transparent" x-model="discountType">
+                          <option value="none">None</option>
+                          <option value="percent">%</option>
+                          <option value="amount">₱</option>
+                        </select>
+                        <input type="number" min="0" step="0.01" class="w-20 rounded border px-2 py-1 text-right text-xs dark:border-gray-700 dark:bg-transparent" x-model="discountValue" />
+                      </div>
+                      <span>- ₱<span x-text="discountAmount().toFixed(2)"></span></span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 text-sm">
+                      <div class="flex items-center gap-2">
+                        <span>Tax %</span>
+                        <input type="number" min="0" step="0.01" class="w-20 rounded border px-2 py-1 text-right text-xs dark:border-gray-700 dark:bg-transparent" x-model="taxPercent" />
+                      </div>
+                      <span>₱<span x-text="taxedAmount().toFixed(2)"></span></span>
+                    </div>
+                    <div class="flex items-center justify-between text-base font-semibold"><span>Total</span><span>₱<span x-text="total().toFixed(2)"></span></span></div>
+                  </div>
+                </div>
+
+                <!-- Payment -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <h3 class="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">Payment</h3>
+                  <div class="mb-3 flex flex-wrap items-center gap-3">
+                    <select class="rounded-xl border px-3 py-2 dark:border-gray-700 dark:bg-transparent" x-model="paymentMethod">
+                      <option>Cash</option>
+                      <option>Card</option>
+                      <option>E-Wallet</option>
+                    </select>
+                    <input x-show="paymentMethod==='Cash'" x-cloak type="number" min="0" step="0.01" placeholder="Cash Given" class="rounded-xl border px-3 py-2 dark:border-gray-700 dark:bg-transparent" x-model="cashGiven" />
+                    <div x-show="paymentMethod==='Cash'" x-cloak class="text-sm text-gray-700 dark:text-gray-300">Change: ₱<span x-text="changeDue().toFixed(2)"></span></div>
+                  </div>
+                  <div class="text-sm text-red-600" x-text="paymentError"></div>
+                  <button :disabled="!canCheckout()" @click="finalizeSale()" class="mt-2 w-full rounded-xl bg-gray-800 py-3 text-center text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/10 dark:text-white dark:hover:bg-white/20">Checkout</button>
+                </div>
+
+                <!-- Recent Sales -->
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+                  <div class="mb-3 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Recent Transactions</h3>
+                    <input type="text" placeholder="Search receipts" class="rounded-xl border px-3 py-2 text-sm dark:border-gray-700 dark:bg-transparent" x-model.trim="historySearch" />
+                  </div>
+                  <div class="max-h-64 space-y-3 overflow-y-auto pr-1">
+                    <template x-for="s in sales.filter(ss => (historySearch ? (ss.id+ss.createdAt).toLowerCase().includes(historySearch.toLowerCase()) : true))" :key="s.id">
+                      <div class="flex items-center justify-between gap-2 rounded-xl border border-gray-200 p-3 text-sm dark:border-gray-800">
+                        <div>
+                          <div class="font-medium text-gray-800 dark:text-white/90" x-text="s.id"></div>
+                          <div class="text-xs text-gray-500 dark:text-gray-400" x-text="new Date(s.createdAt).toLocaleString()"></div>
+                          <div class="text-xs" x-text="'Total: ₱' + Number(s.total).toFixed(2)"></div>
+                          <div class="text-xs" x-text="s.refunded ? 'Refunded' : ''"></div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <button @click="printSale(s)" class="rounded-lg border px-2 py-1 text-xs hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/10">Print</button>
+                          <button @click="refundSale(s)" :disabled="s.refunded" class="rounded-lg border px-2 py-1 text-xs hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-white/10">Refund</button>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+  </html>
+
+
